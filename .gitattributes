@@ -1,2 +1,0 @@
-echo * text=auto > .gitattributes
-echo node_modules/** -text >> .gitattributes

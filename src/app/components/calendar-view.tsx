@@ -187,43 +187,17 @@ export function CalendarView({
         </div>
       </div>
 
-      {/* Calendar Grid */}
+      {/* Time slots grid */}
       <div className="flex-1 overflow-auto">
-        <div className="min-w-max">
-          {/* Day headers */}
-          <div className="flex sticky top-0 bg-white z-10 border-b">
-            <div className="w-20 flex-shrink-0"></div>
-            {weekDates.map((date, index) => {
-              const todayColumn = isToday(date);
-              return (
-                <div
-                  key={index}
-                  className={`flex-1 min-w-[200px] p-3 text-center border-l ${
-                    todayColumn
-                      ? 'bg-blue-50 border-l-2 border-l-blue-500'
-                      : ''
-                  }`}
-                >
-                  <div className={`text-sm ${todayColumn ? 'text-blue-600 font-medium' : 'opacity-60'}`}>
-                    {date.toLocaleDateString('en-US', { weekday: 'short' })}
-                  </div>
-                  <div className={`text-lg ${todayColumn ? 'text-blue-600 font-semibold' : ''}`}>
-                    {date.toLocaleDateString('en-US', { day: 'numeric' })}
-                  </div>
-                  {todayColumn && (
-                    <div className="text-xs text-blue-600 font-medium mt-1">Today</div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Time slots */}
+        <div className="min-w-[800px]">
           {timeSlots.map((timeSlot) => (
-            <div key={timeSlot} className="flex border-b min-h-[80px]">
-              <div className="w-20 flex-shrink-0 p-3 text-sm text-right opacity-60">
-                {timeSlot}
+            <div key={timeSlot} className="flex border-b h-16">
+              {/* Time label */}
+              <div className="w-20 flex-shrink-0 p-2 border-r bg-gray-50 sticky left-0 z-10">
+                <span className="text-sm font-medium text-gray-600">{timeSlot}</span>
               </div>
+
+              {/* Day columns */}
               {weekDates.map((date, index) => {
                 const slotAppointments = getAppointmentsForTimeSlot(
                   appointments,
@@ -240,7 +214,7 @@ export function CalendarView({
                         : 'hover:bg-gray-50'
                     }`}
                   >
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       {slotAppointments.map((apt) => {
                         const consultant = consultants.find((c) => c.id === apt.consultantId);
                         return (

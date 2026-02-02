@@ -28,9 +28,9 @@ const menuItems = [
 
 export function Sidebar({ activeSection, onSectionChange, profile }: SidebarProps) {
   return (
-    <div className="w-64 bg-white border-r flex flex-col h-full">
+    <div className="w-64 bg-white border-r flex flex-col sticky top-0 h-screen">
       {/* Logo/Brand */}
-      <div className="p-6 border-b">
+      <div className="p-6 border-b flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
             <CalendarDays className="w-6 h-6 text-white" />
@@ -42,8 +42,8 @@ export function Sidebar({ activeSection, onSectionChange, profile }: SidebarProp
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4">
+      {/* Navigation Menu */}
+      <nav className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -68,7 +68,7 @@ export function Sidebar({ activeSection, onSectionChange, profile }: SidebarProp
       </nav>
 
       {/* Profile Section */}
-      <div className="p-4 border-t space-y-2">
+      <div className="p-4 border-t flex-shrink-0 space-y-2">
         <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
           {profile.avatar ? (
             <img

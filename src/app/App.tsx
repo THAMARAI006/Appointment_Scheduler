@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { Sidebar } from '@/app/components/sidebar';
+import { ResponsiveSidebar } from '@/app/components/responsive-sidebar';
 import { TopNav } from '@/app/components/top-nav';
-import { RightSidebar } from '@/app/components/right-sidebar';
-import { CalendarView } from '@/app/components/calendar-view';
-import { MonthView } from '@/app/components/month-view';
+import { CompactSummary } from '@/app/components/compact-summary';
+import { AppointmentsCarousel } from '@/app/components/appointments-carousel';
+import { CompactCalendar } from '@/app/components/compact-calendar';
+import { AvailabilityView } from '@/app/components/availability-view';
 import { DashboardOverview } from '@/app/components/dashboard-overview';
-import { SummaryStats } from '@/app/components/summary-stats';
 import { AppointmentModal } from '@/app/components/appointment-modal';
 import { EditProfileModal } from '@/app/components/edit-profile-modal';
-import { ConsultantList } from '@/app/components/consultant-list';
 import { ConsultantDetailsPanel } from '@/app/components/consultant-details-panel';
+import { ConsultantAvailabilityHeatmap } from '@/app/components/consultant-availability-heatmap';
 import type { Appointment } from '@/app/components/appointment-card';
 import type { Consultant } from '@/app/types/consultant';
 
@@ -238,7 +238,6 @@ export default function App() {
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [activeSection, setActiveSection] = useState('appointments');
   const [selectedConsultant, setSelectedConsultant] = useState<Consultant | null>(null);
-  const [filterConsultantId, setFilterConsultantId] = useState<string | null>(null);
 
   const [profile, setProfile] = useState<ProfileData>({
     name: 'Lotus',
@@ -287,26 +286,39 @@ export default function App() {
     setProfile(profileData);
   };
 
-  const handleMonthDateClick = (date: Date) => {
-    setCurrentDate(date);
-    setViewMode('day');
-  };
+  // Get next appointment
+  const today = new Date().toISOString().split('T')[0];
+  const nextAppointment = appointments
+    .filter((apt) => apt.date >= today && apt.status !== 'Completed')
+    .sort((a, b) => {
+      if (a.date !== b.date) return a.date.localeCompare(b.date);
+      return a.startTime.localeCompare(b.startTime);
+    })[0];
+
+  const nextConsultant = nextAppointment
+    ? consultants.find((c) => c.id === nextAppointment.consultantId)
+    : undefined;
 
   const getSectionConfig = () => {
     const configs = {
       dashboard: {
-        title: 'Dashboard Overview',
-        subtitle: 'Monitor your appointments and activity',
+        title: 'Dashboard',
+        subtitle: 'Overview of your appointments and activity',
         showAddButton: false,
       },
       appointments: {
-        title: 'Appointment Calendar',
-        subtitle: 'Manage and schedule appointments',
-        showAddButton: true,
+        title: 'Appointment Scheduler',
+        subtitle: 'Manage your calendar and bookings',
+        showAddButton: false,
       },
       consultants: {
         title: 'Consultants',
-        subtitle: 'Manage consultant profiles and schedules',
+        subtitle: 'View and manage consultant profiles',
+        showAddButton: false,
+      },
+      availability: {
+        title: 'Availability Overview',
+        subtitle: 'Check consultant availability at a glance',
         showAddButton: false,
       },
       settings: {
@@ -320,32 +332,20 @@ export default function App() {
 
   const sectionConfig = getSectionConfig();
 
-  // Filter appointments by selected consultant
-  const filteredAppointments = filterConsultantId
-    ? appointments.filter((apt) => apt.consultantId === filterConsultantId)
-    : appointments;
-
-  // Get consultant name for appointment card
-  const getConsultantName = (consultantId: string) => {
-    return consultants.find((c) => c.id === consultantId)?.name;
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Left Sidebar */}
-      <Sidebar
+      <ResponsiveSidebar
         activeSection={activeSection}
         onSectionChange={(section) => {
           setActiveSection(section);
-          if (section !== 'consultants') {
-            setSelectedConsultant(null);
-          }
+          setSelectedConsultant(null);
         }}
         profile={profile}
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-0">
         {/* Top Navigation */}
         <TopNav
           title={sectionConfig.title}
@@ -356,100 +356,145 @@ export default function App() {
           onEditProfile={() => setIsProfileModalOpen(true)}
         />
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-auto">
-          <div className="p-8">
-            {activeSection === 'dashboard' && (
+        {/* Main Content Area - No unnecessary scrolling */}
+        <main className="flex-1 p-6 overflow-y-auto">
+          {/* Dashboard */}
+          {activeSection === 'dashboard' && (
+            <div className="space-y-6 max-w-7xl mx-auto">
               <DashboardOverview appointments={appointments} profileName={profile.name} />
-            )}
-            
-            {activeSection === 'appointments' && (
-              <>
-                <SummaryStats appointments={appointments} consultants={consultants} />
-                <div className="h-[calc(100vh-350px)]">
-                  {viewMode === 'month' ? (
-                    <MonthView
-                      currentDate={currentDate}
-                      onDateChange={setCurrentDate}
-                      appointments={filteredAppointments}
-                      onDateClick={handleMonthDateClick}
-                    />
-                  ) : (
-                    <CalendarView
-                      currentDate={currentDate}
-                      onDateChange={setCurrentDate}
-                      appointments={filteredAppointments}
-                      consultants={consultants}
-                      onAppointmentClick={handleAppointmentClick}
-                      viewMode={viewMode}
-                      onViewModeChange={setViewMode}
-                      selectedConsultantId={filterConsultantId}
-                      onConsultantFilter={setFilterConsultantId}
-                    />
-                  )}
-                </div>
-              </>
-            )}
+            </div>
+          )}
 
-            {activeSection === 'consultants' && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="bg-white rounded-xl shadow-sm border p-6">
-                    <h3 className="text-lg font-semibold mb-4">Select Consultant</h3>
-                    <ConsultantList
-                      consultants={consultants}
-                      selectedConsultantId={selectedConsultant?.id || null}
-                      onSelectConsultant={setSelectedConsultant}
+          {/* Appointments */}
+          {activeSection === 'appointments' && (
+            <div className="space-y-6 max-w-[1600px] mx-auto">
+              {/* Summary - Above the fold */}
+              <CompactSummary
+                appointments={appointments}
+                consultants={consultants}
+                nextAppointment={nextAppointment || null}
+                nextConsultant={nextConsultant}
+                onViewAppointment={handleAppointmentClick}
+              />
+
+              {/* Upcoming Appointments Carousel */}
+              <div className="bg-white rounded-xl shadow-sm border p-6">
+                <h3 className="text-lg font-semibold mb-4">Upcoming Appointments</h3>
+                <AppointmentsCarousel
+                  appointments={appointments}
+                  consultants={consultants}
+                  onAppointmentClick={handleAppointmentClick}
+                />
+              </div>
+
+              {/* Compact Calendar */}
+              <div className="h-[600px]">
+                <CompactCalendar
+                  currentDate={currentDate}
+                  onDateChange={setCurrentDate}
+                  appointments={appointments}
+                  consultants={consultants}
+                  onAppointmentClick={handleAppointmentClick}
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                  onAddAppointment={handleAddAppointment}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Consultants */}
+          {activeSection === 'consultants' && (
+            <div className="max-w-7xl mx-auto">
+              {!selectedConsultant ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {consultants.map((consultant) => (
+                    <button
+                      key={consultant.id}
+                      onClick={() => setSelectedConsultant(consultant)}
+                      className="bg-white rounded-xl shadow-sm border p-6 hover:shadow-md transition-all text-left hover:border-blue-300"
+                    >
+                      <div className="flex items-center gap-3 mb-4">
+                        {consultant.avatar ? (
+                          <img
+                            src={consultant.avatar}
+                            alt={consultant.name}
+                            className="w-14 h-14 rounded-full object-cover border-2 border-gray-200"
+                          />
+                        ) : (
+                          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium">
+                            {consultant.name
+                              .split(' ')
+                              .map((n) => n[0])
+                              .join('')
+                              .toUpperCase()
+                              .slice(0, 2)}
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold truncate">{consultant.name}</p>
+                          <p className="text-sm text-gray-500 truncate">
+                            {consultant.specialization}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-xs text-gray-600 space-y-1">
+                        <p>📧 {consultant.email}</p>
+                        <p>📞 {consultant.phone}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <button
+                    onClick={() => setSelectedConsultant(null)}
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    ← Back to all consultants
+                  </button>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <ConsultantDetailsPanel consultant={selectedConsultant} />
+                    <ConsultantAvailabilityHeatmap
+                      consultant={selectedConsultant}
+                      appointments={appointments}
+                      onDayClick={(date) => {
+                        setCurrentDate(date);
+                        setActiveSection('appointments');
+                        setViewMode('day');
+                      }}
                     />
                   </div>
                 </div>
-                <div>
-                  <ConsultantDetailsPanel consultant={selectedConsultant} />
-                  {selectedConsultant && (
-                    <div className="mt-6">
-                      <div className="bg-white rounded-xl shadow-sm border p-6">
-                        <h3 className="text-lg font-semibold mb-4">Consultant Schedule</h3>
-                        <div className="h-[600px]">
-                          <CalendarView
-                            currentDate={currentDate}
-                            onDateChange={setCurrentDate}
-                            appointments={appointments.filter(
-                              (apt) => apt.consultantId === selectedConsultant.id
-                            )}
-                            consultants={consultants}
-                            onAppointmentClick={handleAppointmentClick}
-                            viewMode="week"
-                            onViewModeChange={() => {}}
-                            selectedConsultantId={selectedConsultant.id}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+              )}
+            </div>
+          )}
 
-            {activeSection === 'settings' && (
+          {/* Availability */}
+          {activeSection === 'availability' && (
+            <div className="max-w-7xl mx-auto">
+              <AvailabilityView
+                consultants={consultants}
+                appointments={appointments}
+                onConsultantClick={(consultant) => {
+                  setSelectedConsultant(consultant);
+                  setActiveSection('consultants');
+                }}
+              />
+            </div>
+          )}
+
+          {/* Settings */}
+          {activeSection === 'settings' && (
+            <div className="max-w-4xl mx-auto">
               <div className="bg-white rounded-xl shadow-sm border p-8">
                 <h2 className="text-xl font-semibold mb-6">Settings</h2>
                 <p className="text-gray-600">Configure your application preferences here.</p>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </main>
       </div>
-
-      {/* Right Sidebar */}
-      {activeSection === 'appointments' && (
-        <RightSidebar
-          appointments={filteredAppointments}
-          consultants={consultants}
-          selectedConsultant={filterConsultantId ? consultants.find(c => c.id === filterConsultantId) : null}
-          onAppointmentClick={handleAppointmentClick}
-          onQuickAdd={handleAddAppointment}
-        />
-      )}
 
       {/* Appointment Modal */}
       <AppointmentModal
