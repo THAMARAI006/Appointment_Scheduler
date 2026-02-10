@@ -1,4 +1,4 @@
-import { Calendar, Clock, Users, CheckCircle, User, ArrowRight } from 'lucide-react';
+import { CalendarDays, Clock, CheckCircle, UserCheck } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import type { Appointment } from './appointment-card';
 import type { Consultant } from '@/app/types/consultant';
@@ -25,96 +25,55 @@ export function CompactSummary({
   onViewAppointment,
 }: CompactSummaryProps) {
   const today = new Date().toISOString().split('T')[0];
-  const todayAppointments = appointments.filter((apt) => apt.date === today);
 
-  const stats = {
-    todayTotal: todayAppointments.length,
-    availableSlots: 40 - todayAppointments.length,
-    activeConsultants: consultants.length,
-    completed: todayAppointments.filter((apt) => apt.status === 'Completed').length,
-  };
+  const pendingCount = appointments.filter((a) => a.status === 'Pending').length;
+  const confirmedCount = appointments.filter((a) => a.status === 'Confirmed').length;
+  const completedCount = appointments.filter((a) => a.status === 'Completed').length;
+  const todayCount = appointments.filter((a) => a.date === today).length;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-      {/* Next Appointment - Featured Card */}
-      <div className="lg:col-span-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-sm p-6 text-white">
-        <div className="flex items-center gap-2 mb-4">
-          <Calendar className="w-5 h-5" />
-          <h3 className="font-semibold text-sm uppercase tracking-wider">Next Appointment</h3>
-        </div>
-        
-        {nextAppointment ? (
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <User className="w-6 h-6" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-lg font-bold truncate">{nextAppointment.customerName}</p>
-                {nextConsultant && (
-                  <p className="text-sm text-blue-100 truncate">with {nextConsultant.name}</p>
-                )}
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-sm">
-                  <Clock className="w-4 h-4" />
-                  <span className="font-medium">
-                    {nextAppointment.startTime} - {nextAppointment.endTime}
-                  </span>
-                </div>
-                <div className="text-xs text-blue-100">
-                  {new Date(nextAppointment.date).toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </div>
-              </div>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => onViewAppointment(nextAppointment)}
-                className="gap-2 group"
-              >
-                View
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="text-center py-6">
-            <p className="text-blue-100">No upcoming appointments</p>
-          </div>
-        )}
-      </div>
-
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
       {/* Today's Appointments */}
-      <div className="bg-white rounded-xl shadow-sm border p-6">
-        <div className="flex items-center justify-between mb-3">
-          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-            <Calendar className="w-5 h-5 text-blue-600" />
+      <div className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-xl p-4 text-white shadow-md">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-blue-100 text-xs font-medium mb-1">Today</p>
+            <p className="text-3xl font-bold">{todayCount}</p>
           </div>
-        </div>
-        <div className="text-3xl font-bold text-gray-900 mb-1">{stats.todayTotal}</div>
-        <div className="text-sm text-gray-600">Today's Appointments</div>
-        <div className="mt-3 text-xs text-gray-500">
-          {stats.completed} completed
+          <CalendarDays className="w-8 h-8 opacity-80" />
         </div>
       </div>
 
-      {/* Available Slots */}
-      <div className="bg-white rounded-xl shadow-sm border p-6">
-        <div className="flex items-center justify-between mb-3">
-          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-            <Clock className="w-5 h-5 text-green-600" />
+      {/* Pending */}
+      <div className="bg-white rounded-xl p-4 shadow-md border-2 border-yellow-200">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-slate-600 text-xs font-medium mb-1">Pending</p>
+            <p className="text-3xl font-bold text-yellow-500">{pendingCount}</p>
           </div>
+          <Clock className="w-8 h-8 text-yellow-400 opacity-80" />
         </div>
-        <div className="text-3xl font-bold text-gray-900 mb-1">{stats.availableSlots}</div>
-        <div className="text-sm text-gray-600">Available Slots</div>
-        <div className="mt-3 text-xs text-gray-500">
-          Open today
+      </div>
+
+      {/* Confirmed */}
+      <div className="bg-white rounded-xl p-4 shadow-md border-2 border-blue-200">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-slate-600 text-xs font-medium mb-1">Confirmed</p>
+            <p className="text-3xl font-bold text-blue-500">{confirmedCount}</p>
+          </div>
+          <CheckCircle className="w-8 h-8 text-blue-400 opacity-80" />
+        </div>
+      </div>
+
+      {/* Completed */}
+      <div className="bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl p-4 text-white shadow-md">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-orange-100 text-xs font-medium mb-1">Completed</p>
+            <p className="text-3xl font-bold">{completedCount}</p>
+          </div>
+          <UserCheck className="w-8 h-8 opacity-80" />
         </div>
       </div>
     </div>

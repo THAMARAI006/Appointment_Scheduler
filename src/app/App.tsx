@@ -3,11 +3,12 @@ import { ResponsiveSidebar } from '@/app/components/responsive-sidebar';
 import { TopNav } from '@/app/components/top-nav';
 import { CompactSummary } from '@/app/components/compact-summary';
 import { AppointmentsCarousel } from '@/app/components/appointments-carousel';
-import { CompactCalendar } from '@/app/components/compact-calendar';
+import { ProfessionalCalendar } from '@/app/components/professional-calendar';
 import { AvailabilityView } from '@/app/components/availability-view';
 import { DashboardOverview } from '@/app/components/dashboard-overview';
 import { AppointmentModal } from '@/app/components/appointment-modal';
 import { EditProfileModal } from '@/app/components/edit-profile-modal';
+import { ConsultantsGrid } from '@/app/components/consultants-grid';
 import { ConsultantDetailsPanel } from '@/app/components/consultant-details-panel';
 import { ConsultantAvailabilityHeatmap } from '@/app/components/consultant-availability-heatmap';
 import type { Appointment } from '@/app/components/appointment-card';
@@ -333,7 +334,7 @@ export default function App() {
   const sectionConfig = getSectionConfig();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-orange-50/20 to-blue-50 flex">
       {/* Left Sidebar */}
       <ResponsiveSidebar
         activeSection={activeSection}
@@ -345,154 +346,125 @@ export default function App() {
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 lg:ml-0">
-        {/* Top Navigation */}
-        <TopNav
-          title={sectionConfig.title}
-          subtitle={sectionConfig.subtitle}
-          showAddButton={sectionConfig.showAddButton}
-          onAddClick={handleAddAppointment}
-          profile={profile}
-          onEditProfile={() => setIsProfileModalOpen(true)}
-        />
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-0 h-screen">
+        {/* Top Navigation - Sticky */}
+        <div className="flex-shrink-0 sticky top-0 z-20 bg-white border-b border-blue-100">
+          <TopNav
+            title={sectionConfig.title}
+            subtitle={sectionConfig.subtitle}
+            showAddButton={sectionConfig.showAddButton}
+            onAddClick={handleAddAppointment}
+            profile={profile}
+            onEditProfile={() => setIsProfileModalOpen(true)}
+          />
+        </div>
 
-        {/* Main Content Area - No unnecessary scrolling */}
-        <main className="flex-1 p-6 overflow-y-auto">
-          {/* Dashboard */}
-          {activeSection === 'dashboard' && (
-            <div className="space-y-6 max-w-7xl mx-auto">
-              <DashboardOverview appointments={appointments} profileName={profile.name} />
-            </div>
-          )}
+        {/* Main Content Area - Single Scroll Container */}
+        <main className="flex-1 overflow-y-auto">
+          <div className="p-6">
+            {/* Dashboard */}
+            {activeSection === 'dashboard' && (
+              <div className="space-y-6 max-w-7xl mx-auto">
+                <DashboardOverview appointments={appointments} profileName={profile.name} />
+              </div>
+            )}
 
-          {/* Appointments */}
-          {activeSection === 'appointments' && (
-            <div className="space-y-6 max-w-[1600px] mx-auto">
-              {/* Summary - Above the fold */}
-              <CompactSummary
-                appointments={appointments}
-                consultants={consultants}
-                nextAppointment={nextAppointment || null}
-                nextConsultant={nextConsultant}
-                onViewAppointment={handleAppointmentClick}
-              />
-
-              {/* Upcoming Appointments Carousel */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h3 className="text-lg font-semibold mb-4">Upcoming Appointments</h3>
-                <AppointmentsCarousel
+            {/* Appointments */}
+            {activeSection === 'appointments' && (
+              <div className="space-y-6 max-w-[1600px] mx-auto">
+                {/* Summary - Above the fold */}
+                <CompactSummary
                   appointments={appointments}
                   consultants={consultants}
-                  onAppointmentClick={handleAppointmentClick}
+                  nextAppointment={nextAppointment || null}
+                  nextConsultant={nextConsultant}
+                  onViewAppointment={handleAppointmentClick}
                 />
-              </div>
 
-              {/* Compact Calendar */}
-              <div className="h-[600px]">
-                <CompactCalendar
-                  currentDate={currentDate}
-                  onDateChange={setCurrentDate}
-                  appointments={appointments}
-                  consultants={consultants}
-                  onAppointmentClick={handleAppointmentClick}
-                  viewMode={viewMode}
-                  onViewModeChange={setViewMode}
-                  onAddAppointment={handleAddAppointment}
-                />
-              </div>
-            </div>
-          )}
+                {/* Upcoming Appointments Carousel */}
+                <div className="bg-white rounded-xl shadow-sm border p-6">
+                  <h3 className="text-lg font-semibold mb-4">Upcoming Appointments</h3>
+                  <AppointmentsCarousel
+                    appointments={appointments}
+                    consultants={consultants}
+                    onAppointmentClick={handleAppointmentClick}
+                  />
+                </div>
 
-          {/* Consultants */}
-          {activeSection === 'consultants' && (
-            <div className="max-w-7xl mx-auto">
-              {!selectedConsultant ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {consultants.map((consultant) => (
+                {/* Compact Calendar */}
+                <div className="h-[600px]">
+                  <ProfessionalCalendar
+                    currentDate={currentDate}
+                    onDateChange={setCurrentDate}
+                    appointments={appointments}
+                    consultants={consultants}
+                    onAppointmentClick={handleAppointmentClick}
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
+                    onAddAppointment={handleAddAppointment}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Consultants */}
+            {activeSection === 'consultants' && (
+              <div className="max-w-7xl mx-auto">
+                {!selectedConsultant ? (
+                  <ConsultantsGrid
+                    consultants={consultants}
+                    appointments={appointments}
+                    onConsultantClick={setSelectedConsultant}
+                  />
+                ) : (
+                  <div className="space-y-6">
                     <button
-                      key={consultant.id}
-                      onClick={() => setSelectedConsultant(consultant)}
-                      className="bg-white rounded-xl shadow-sm border p-6 hover:shadow-md transition-all text-left hover:border-blue-300"
+                      onClick={() => setSelectedConsultant(null)}
+                      className="text-blue-600 hover:text-blue-700 font-medium"
                     >
-                      <div className="flex items-center gap-3 mb-4">
-                        {consultant.avatar ? (
-                          <img
-                            src={consultant.avatar}
-                            alt={consultant.name}
-                            className="w-14 h-14 rounded-full object-cover border-2 border-gray-200"
-                          />
-                        ) : (
-                          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium">
-                            {consultant.name
-                              .split(' ')
-                              .map((n) => n[0])
-                              .join('')
-                              .toUpperCase()
-                              .slice(0, 2)}
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold truncate">{consultant.name}</p>
-                          <p className="text-sm text-gray-500 truncate">
-                            {consultant.specialization}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-xs text-gray-600 space-y-1">
-                        <p>📧 {consultant.email}</p>
-                        <p>📞 {consultant.phone}</p>
-                      </div>
+                      ← Back to all consultants
                     </button>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  <button
-                    onClick={() => setSelectedConsultant(null)}
-                    className="text-blue-600 hover:text-blue-700 font-medium"
-                  >
-                    ← Back to all consultants
-                  </button>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <ConsultantDetailsPanel consultant={selectedConsultant} />
-                    <ConsultantAvailabilityHeatmap
-                      consultant={selectedConsultant}
-                      appointments={appointments}
-                      onDayClick={(date) => {
-                        setCurrentDate(date);
-                        setActiveSection('appointments');
-                        setViewMode('day');
-                      }}
-                    />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <ConsultantDetailsPanel consultant={selectedConsultant} />
+                      <ConsultantAvailabilityHeatmap
+                        consultant={selectedConsultant}
+                        appointments={appointments}
+                        onDayClick={(date) => {
+                          setCurrentDate(date);
+                          setActiveSection('appointments');
+                          setViewMode('day');
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Availability */}
-          {activeSection === 'availability' && (
-            <div className="max-w-7xl mx-auto">
-              <AvailabilityView
-                consultants={consultants}
-                appointments={appointments}
-                onConsultantClick={(consultant) => {
-                  setSelectedConsultant(consultant);
-                  setActiveSection('consultants');
-                }}
-              />
-            </div>
-          )}
-
-          {/* Settings */}
-          {activeSection === 'settings' && (
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-white rounded-xl shadow-sm border p-8">
-                <h2 className="text-xl font-semibold mb-6">Settings</h2>
-                <p className="text-gray-600">Configure your application preferences here.</p>
+                )}
               </div>
-            </div>
-          )}
+            )}
+
+            {/* Availability */}
+            {activeSection === 'availability' && (
+              <div className="max-w-7xl mx-auto">
+                <AvailabilityView
+                  consultants={consultants}
+                  appointments={appointments}
+                  onConsultantClick={(consultant) => {
+                    setSelectedConsultant(consultant);
+                    setActiveSection('consultants');
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Settings */}
+            {activeSection === 'settings' && (
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-white rounded-xl shadow-sm border p-8">
+                  <h2 className="text-xl font-semibold mb-6">Settings</h2>
+                  <p className="text-gray-600">Configure your application preferences here.</p>
+                </div>
+              </div>
+            )}
+          </div>
         </main>
       </div>
 

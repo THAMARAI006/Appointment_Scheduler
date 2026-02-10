@@ -33,21 +33,21 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const SidebarContent = () => (
-    <>
+    <div className="flex flex-col h-full">
       {/* Logo/Brand */}
-      <div className="p-6 border-b flex-shrink-0">
+      <div className="p-6 border-b border-blue-200 flex-shrink-0 bg-white">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-500 rounded-xl flex items-center justify-center shadow-md">
             <CalendarDays className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-semibold">AppointMe</h1>
-            <p className="text-xs text-gray-500">Scheduling System</p>
+            <h1 className="text-lg font-semibold text-slate-700">AppointMe</h1>
+            <p className="text-xs text-slate-500">Scheduling System</p>
           </div>
         </div>
       </div>
 
-      {/* Navigation Menu */}
+      {/* Navigation Menu - Scrollable */}
       <nav className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-1">
           {menuItems.map((item) => {
@@ -60,13 +60,13 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
                   onSectionChange(item.id);
                   setIsMobileOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                   isActive
-                    ? 'bg-blue-50 text-blue-600 font-medium shadow-sm'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white font-medium shadow-md'
+                    : 'text-slate-600 hover:bg-blue-50'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-500'}`} />
+                <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-500'}`} />
                 <span className="flex-1 text-left">{item.label}</span>
               </button>
             );
@@ -74,38 +74,40 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
         </div>
       </nav>
 
-      {/* Profile Section */}
-      <div className="p-4 border-t flex-shrink-0 space-y-2">
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-          {profile.avatar ? (
-            <img
-              src={profile.avatar}
-              alt={profile.name}
-              className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
-            />
-          ) : (
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-medium text-sm">
-              {profile.name
-                .split(' ')
-                .map((n) => n[0])
-                .join('')
-                .toUpperCase()
-                .slice(0, 2)}
+      {/* Profile Section - Sticky at Bottom */}
+      <div className="p-4 border-t border-blue-200 flex-shrink-0 bg-white">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-blue-50 to-orange-50 border border-blue-200">
+            {profile.avatar ? (
+              <img
+                src={profile.avatar}
+                alt={profile.name}
+                className="w-10 h-10 rounded-full object-cover border-2 border-blue-300"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-medium text-sm shadow-md">
+                {profile.name
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')
+                  .toUpperCase()
+                  .slice(0, 2)}
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-sm truncate text-slate-700">{profile.name}</p>
+              <p className="text-xs text-slate-500 truncate">{profile.role}</p>
             </div>
-          )}
-          <div className="flex-1 min-w-0">
-            <p className="font-medium text-sm truncate">{profile.name}</p>
-            <p className="text-xs text-gray-500 truncate">{profile.role}</p>
           </div>
+          
+          {/* Logout Button */}
+          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-orange-600 hover:bg-orange-50 transition-all border border-orange-200">
+            <LogOut className="w-5 h-5" />
+            <span className="flex-1 text-left font-medium">Logout</span>
+          </button>
         </div>
-        
-        {/* Logout Button */}
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-all">
-          <LogOut className="w-5 h-5" />
-          <span className="flex-1 text-left font-medium">Logout</span>
-        </button>
       </div>
-    </>
+    </div>
   );
 
   return (
@@ -113,15 +115,15 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center"
+        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center border border-blue-200"
       >
-        {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        {isMobileOpen ? <X className="w-5 h-5 text-slate-600" /> : <Menu className="w-5 h-5 text-slate-600" />}
       </button>
 
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          className="lg:hidden fixed inset-0 bg-blue-900/20 z-30 backdrop-blur-sm"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -129,7 +131,7 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
       {/* Sidebar - Desktop & Mobile */}
       <aside
         className={`
-          fixed lg:static top-0 left-0 h-screen w-64 bg-white border-r flex flex-col z-40
+          fixed lg:static top-0 left-0 h-screen w-64 bg-gradient-to-b from-blue-50 to-orange-50/30 border-r border-blue-200 flex flex-col z-40
           transition-transform duration-300 ease-in-out
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
