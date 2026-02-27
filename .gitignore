@@ -1,0 +1,17 @@
+# Frontend artifacts
+client/node_modules/
+client/dist/
+client/.vite/
+
+# Python environment and cache
+.venv/
+server/.venv/
+server/venv/
+**/__pycache__/
+*.pyc
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.client_git_backup/
