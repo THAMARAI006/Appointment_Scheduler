@@ -9,6 +9,13 @@ interface CompactSummaryProps {
   nextAppointment: Appointment | null;
   nextConsultant: Consultant | undefined;
   onViewAppointment: (appointment: Appointment) => void;
+  kpis?: {
+    total: number;
+    pending: number;
+    confirmed: number;
+    completed: number;
+    upcoming: number;
+  };
 }
 
 const statusColors = {
@@ -23,18 +30,19 @@ export function CompactSummary({
   nextAppointment,
   nextConsultant,
   onViewAppointment,
+  kpis,
 }: CompactSummaryProps) {
   const today = new Date().toISOString().split('T')[0];
 
-  const pendingCount = appointments.filter((a) => a.status === 'Pending').length;
-  const confirmedCount = appointments.filter((a) => a.status === 'Confirmed').length;
-  const completedCount = appointments.filter((a) => a.status === 'Completed').length;
-  const todayCount = appointments.filter((a) => a.date === today).length;
+  const pendingCount = kpis?.pending ?? appointments.filter((a) => a.status === 'Pending').length;
+  const confirmedCount = kpis?.confirmed ?? appointments.filter((a) => a.status === 'Confirmed').length;
+  const completedCount = kpis?.completed ?? appointments.filter((a) => a.status === 'Completed').length;
+  const todayCount = kpis?.upcoming ?? appointments.filter((a) => a.date === today).length;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
       {/* Today's Appointments */}
-      <div className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-xl p-4 text-white shadow-md">
+      <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl p-4 text-white shadow-sm">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-blue-100 text-xs font-medium mb-1">Today</p>
@@ -45,7 +53,7 @@ export function CompactSummary({
       </div>
 
       {/* Pending */}
-      <div className="bg-white rounded-xl p-4 shadow-md border-2 border-yellow-200">
+      <div className="bg-white rounded-xl p-4 shadow-sm border border-yellow-200">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-slate-600 text-xs font-medium mb-1">Pending</p>
@@ -56,7 +64,7 @@ export function CompactSummary({
       </div>
 
       {/* Confirmed */}
-      <div className="bg-white rounded-xl p-4 shadow-md border-2 border-blue-200">
+      <div className="bg-white rounded-xl p-4 shadow-sm border border-blue-200">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-slate-600 text-xs font-medium mb-1">Confirmed</p>
@@ -67,7 +75,7 @@ export function CompactSummary({
       </div>
 
       {/* Completed */}
-      <div className="bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl p-4 text-white shadow-md">
+      <div className="bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl p-4 text-white shadow-sm">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-orange-100 text-xs font-medium mb-1">Completed</p>

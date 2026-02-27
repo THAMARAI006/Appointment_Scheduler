@@ -190,10 +190,10 @@ export function ConsultantAvailabilityHeatmap({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border p-6">
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold">Availability</h3>
+          <h3 className="text-4xl font-semibold tracking-tight">Availability</h3>
           <p className="text-sm text-gray-500">
             {currentDate.toLocaleDateString('en-US', {
               month: 'long',
@@ -202,11 +202,12 @@ export function ConsultantAvailabilityHeatmap({
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
           <Button
             variant={viewMode === 'day' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setViewMode('day')}
+            className={viewMode !== 'day' ? 'border-transparent bg-transparent' : ''}
           >
             Day
           </Button>
@@ -214,6 +215,7 @@ export function ConsultantAvailabilityHeatmap({
             variant={viewMode === 'week' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setViewMode('week')}
+            className={viewMode !== 'week' ? 'border-transparent bg-transparent' : ''}
           >
             Week
           </Button>
@@ -221,20 +223,21 @@ export function ConsultantAvailabilityHeatmap({
             variant={viewMode === 'month' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setViewMode('month')}
+            className={viewMode !== 'month' ? 'border-transparent bg-transparent' : ''}
           >
             Month
           </Button>
         </div>
       </div>
 
-      <div className="mb-6">
+      <div className="mb-6 min-h-[230px]">
         {viewMode === 'day' && renderDayView()}
         {viewMode === 'week' && renderWeekView()}
         {viewMode === 'month' && renderMonthView()}
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-6 pt-4 border-t">
+      <div className="flex items-center justify-center gap-6 pt-4 border-t border-slate-100">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-green-500 rounded-full" />
           <span className="text-sm text-gray-600">Free</span>

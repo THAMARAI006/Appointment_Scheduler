@@ -20,7 +20,7 @@ function NextArrow(props: any) {
   return (
     <button
       onClick={onClick}
-      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 transition-colors"
+      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white rounded-full shadow-sm border border-slate-200 flex items-center justify-center hover:bg-slate-100 transition-colors"
     >
       <ChevronRight className="w-4 h-4 text-gray-700" />
     </button>
@@ -32,7 +32,7 @@ function PrevArrow(props: any) {
   return (
     <button
       onClick={onClick}
-      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 transition-colors"
+      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white rounded-full shadow-sm border border-slate-200 flex items-center justify-center hover:bg-slate-100 transition-colors"
     >
       <ChevronLeft className="w-4 h-4 text-gray-700" />
     </button>
@@ -99,11 +99,11 @@ export function AppointmentsCarousel({
           <div key={apt.id} className="px-2">
             <button
               onClick={() => onAppointmentClick(apt)}
-              className="w-full bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all text-left"
+              className="w-full bg-white rounded-xl p-4 border border-slate-200 hover:border-blue-300 hover:shadow-sm transition-all text-left"
             >
               <div className="flex items-start justify-between gap-2 mb-3">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white flex-shrink-0">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white flex-shrink-0">
                     <User className="w-5 h-5" />
                   </div>
                   <div className="min-w-0 flex-1">

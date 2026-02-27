@@ -35,9 +35,9 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       {/* Logo/Brand */}
-      <div className="p-6 border-b border-blue-200 flex-shrink-0 bg-white">
+      <div className="p-6 border-b border-slate-200 flex-shrink-0 bg-white">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-500 rounded-xl flex items-center justify-center shadow-md">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
             <CalendarDays className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -62,8 +62,8 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                   isActive
-                    ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white font-medium shadow-md'
-                    : 'text-slate-600 hover:bg-blue-50'
+                    ? 'bg-blue-600 text-white font-medium shadow-sm'
+                    : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-500'}`} />
@@ -75,17 +75,17 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
       </nav>
 
       {/* Profile Section - Sticky at Bottom */}
-      <div className="p-4 border-t border-blue-200 flex-shrink-0 bg-white">
+      <div className="p-4 border-t border-slate-200 flex-shrink-0 bg-white">
         <div className="space-y-2">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-blue-50 to-orange-50 border border-blue-200">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
             {profile.avatar ? (
               <img
                 src={profile.avatar}
                 alt={profile.name}
-                className="w-10 h-10 rounded-full object-cover border-2 border-blue-300"
+                className="w-10 h-10 rounded-full object-cover border-2 border-slate-200"
               />
             ) : (
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-medium text-sm shadow-md">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
                 {profile.name
                   .split(' ')
                   .map((n) => n[0])
@@ -115,7 +115,7 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center border border-blue-200"
+        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center border border-slate-200"
       >
         {isMobileOpen ? <X className="w-5 h-5 text-slate-600" /> : <Menu className="w-5 h-5 text-slate-600" />}
       </button>
@@ -123,7 +123,7 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-blue-900/20 z-30 backdrop-blur-sm"
+          className="lg:hidden fixed inset-0 bg-slate-900/20 z-30 backdrop-blur-sm"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -131,7 +131,7 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
       {/* Sidebar - Desktop & Mobile */}
       <aside
         className={`
-          fixed lg:static top-0 left-0 h-screen w-64 bg-gradient-to-b from-blue-50 to-orange-50/30 border-r border-blue-200 flex flex-col z-40
+          fixed lg:static top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 flex flex-col z-40
           transition-transform duration-300 ease-in-out
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}

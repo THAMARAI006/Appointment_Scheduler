@@ -26,45 +26,45 @@ export function TopNav({
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   return (
-    <header className="bg-white shadow-sm border-b border-blue-100">
+    <header className="bg-white/95 backdrop-blur border-b border-slate-200">
       <div className="px-8 py-4">
         <div className="flex items-center justify-between">
           {/* Page Title */}
           <div>
-            <h1 className="text-2xl font-semibold text-slate-700">{title}</h1>
+            <h1 className="text-2xl font-semibold text-slate-800 tracking-tight">{title}</h1>
             <p className="text-sm text-slate-500 mt-1">{subtitle}</p>
           </div>
 
           {/* Right Side - Profile & Actions */}
           <div className="flex items-center gap-4">
             {showAddButton && onAddClick && (
-              <Button onClick={onAddClick} className="gap-2 bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white shadow-md">
+              <Button onClick={onAddClick} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-sm rounded-xl">
                 <span className="text-lg leading-none">+</span>
                 Add Appointment
               </Button>
             )}
 
             {/* Notifications */}
-            <button className="relative p-2 hover:bg-blue-50 rounded-xl transition-colors">
+            <button className="relative p-2.5 hover:bg-slate-100 rounded-xl transition-colors border border-transparent hover:border-slate-200">
               <Bell className="w-5 h-5 text-slate-600" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-orange-400 rounded-full shadow-sm"></span>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-orange-500 rounded-full"></span>
             </button>
 
             {/* User Profile Section with Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
-                className="flex items-center gap-3 pl-4 border-l border-blue-200 hover:bg-blue-50 rounded-xl p-2 transition-colors"
+                className="flex items-center gap-3 pl-4 border-l border-slate-200 hover:bg-slate-100 rounded-xl p-2 transition-colors"
               >
                 {/* Profile Picture */}
                 {profile.avatar ? (
                   <img
                     src={profile.avatar}
                     alt={profile.name}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-blue-300"
+                    className="w-10 h-10 rounded-full object-cover border-2 border-slate-200"
                   />
                 ) : (
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-medium text-sm shadow-md">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
                     {profile.name
                       .split(' ')
                       .map((n) => n[0])
@@ -94,18 +94,18 @@ export function TopNav({
                     className="fixed inset-0 z-20"
                     onClick={() => setShowProfileMenu(false)}
                   />
-                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-blue-200 z-30 overflow-hidden">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-slate-200 z-30 overflow-hidden">
                     {/* Profile Info */}
-                    <div className="p-4 border-b border-blue-100 bg-gradient-to-r from-blue-50 to-orange-50">
+                    <div className="p-4 border-b border-slate-100 bg-slate-50">
                       <div className="flex items-center gap-3">
                         {profile.avatar ? (
                           <img
                             src={profile.avatar}
                             alt={profile.name}
-                            className="w-12 h-12 rounded-full object-cover border-2 border-blue-300"
+                            className="w-12 h-12 rounded-full object-cover border-2 border-slate-200"
                           />
                         ) : (
-                          <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-medium shadow-md">
+                          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-medium">
                             {profile.name
                               .split(' ')
                               .map((n) => n[0])
@@ -128,7 +128,7 @@ export function TopNav({
                           onEditProfile();
                           setShowProfileMenu(false);
                         }}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-blue-50 transition-colors text-left"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 transition-colors text-left"
                       >
                         <User className="w-4 h-4 text-blue-500" />
                         <span className="text-sm font-medium text-slate-700">My Profile</span>
@@ -139,13 +139,13 @@ export function TopNav({
                           setShowProfileMenu(false);
                           // Handle settings navigation
                         }}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-blue-50 transition-colors text-left"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 transition-colors text-left"
                       >
                         <Settings className="w-4 h-4 text-blue-500" />
                         <span className="text-sm font-medium text-slate-700">Settings</span>
                       </button>
 
-                      <div className="my-2 border-t border-blue-100" />
+                      <div className="my-2 border-t border-slate-100" />
 
                       <button
                         onClick={() => {

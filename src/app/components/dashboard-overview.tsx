@@ -4,18 +4,25 @@ import type { Appointment } from './appointment-card';
 interface DashboardOverviewProps {
   appointments: Appointment[];
   profileName: string;
+  kpis?: {
+    total: number;
+    pending: number;
+    confirmed: number;
+    completed: number;
+    upcoming: number;
+  };
 }
 
-export function DashboardOverview({ appointments, profileName }: DashboardOverviewProps) {
+export function DashboardOverview({ appointments, profileName, kpis }: DashboardOverviewProps) {
   const today = new Date().toISOString().split('T')[0];
   const todayAppointments = appointments.filter((apt) => apt.date === today);
   
   const stats = {
-    total: appointments.length,
-    today: todayAppointments.length,
-    pending: appointments.filter((apt) => apt.status === 'Pending').length,
-    confirmed: appointments.filter((apt) => apt.status === 'Confirmed').length,
-    completed: appointments.filter((apt) => apt.status === 'Completed').length,
+    total: kpis?.total ?? appointments.length,
+    today: kpis?.upcoming ?? todayAppointments.length,
+    pending: kpis?.pending ?? appointments.filter((apt) => apt.status === 'Pending').length,
+    confirmed: kpis?.confirmed ?? appointments.filter((apt) => apt.status === 'Confirmed').length,
+    completed: kpis?.completed ?? appointments.filter((apt) => apt.status === 'Completed').length,
   };
 
   const recentAppointments = appointments

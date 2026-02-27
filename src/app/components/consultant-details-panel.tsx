@@ -1,4 +1,4 @@
-import { Mail, Phone, Briefcase, User } from 'lucide-react';
+import { Briefcase, Mail, Phone } from 'lucide-react';
 import type { Consultant } from '@/app/types/consultant';
 
 interface ConsultantDetailsPanelProps {
@@ -16,59 +16,65 @@ export function ConsultantDetailsPanel({ consultant }: ConsultantDetailsPanelPro
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border p-6">
-      <div className="flex flex-col items-center text-center mb-6">
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 h-full">
+      <div className="flex items-center gap-4 pb-6 border-b border-slate-100">
         {consultant.avatar ? (
           <img
             src={consultant.avatar}
             alt={consultant.name}
-            className="w-24 h-24 rounded-full object-cover border-4 border-gray-100 mb-4"
+            className="w-20 h-20 rounded-full object-cover border-4 border-gray-100"
           />
         ) : (
-          <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-medium mb-4 border-4 border-gray-100">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-medium border-4 border-gray-100">
             {consultant.name
               .split(' ')
-              .map((n) => n[0])
+              .map((namePart) => namePart[0])
               .join('')
               .toUpperCase()
               .slice(0, 2)}
           </div>
         )}
-        <h3 className="text-xl font-semibold text-gray-900 mb-1">{consultant.name}</h3>
-        <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-          <Briefcase className="w-4 h-4" />
-          <span>{consultant.specialization}</span>
+
+        <div className="min-w-0">
+          <h3 className="text-4xl font-semibold text-gray-900 leading-tight tracking-tight">{consultant.name}</h3>
+          <div className="flex items-center gap-2 text-sm text-gray-600 mt-2">
+            <Briefcase className="w-4 h-4" />
+            <span>{consultant.specialization}</span>
+          </div>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-          <Mail className="w-5 h-5 text-gray-500 mt-0.5 flex-shrink-0" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+        <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+          <Mail className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-gray-500 mb-1">Email</p>
+            <p className="text-xs text-gray-500 mb-1 uppercase tracking-wide">Email</p>
             <p className="text-sm font-medium text-gray-900 break-all">{consultant.email}</p>
           </div>
         </div>
 
-        <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-          <Phone className="w-5 h-5 text-gray-500 mt-0.5 flex-shrink-0" />
+        <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+          <Phone className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-gray-500 mb-1">Phone</p>
+            <p className="text-xs text-gray-500 mb-1 uppercase tracking-wide">Phone</p>
             <p className="text-sm font-medium text-gray-900">{consultant.phone}</p>
           </div>
         </div>
       </div>
 
-      <div className="mt-6 pt-6 border-t">
-        <h4 className="text-sm font-semibold text-gray-700 mb-3">Weekly Availability</h4>
-        <div className="space-y-2">
+      <div className="mt-6 pt-6 border-t border-slate-100">
+        <h4 className="text-sm font-semibold text-gray-700 mb-4">Weekly Availability</h4>
+        <div className="space-y-2.5 max-h-[320px] overflow-auto pr-1">
           {Object.entries(consultant.availability).map(([day, slots]) => (
-            <div key={day} className="flex justify-between items-center text-sm">
-              <span className="text-gray-600 capitalize">{day}</span>
-              <span className="text-gray-900 font-medium">
+            <div
+              key={day}
+              className="flex items-center justify-between text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5"
+            >
+              <span className="text-gray-700 capitalize font-medium w-28">{day}</span>
+              <span className="text-gray-900 font-medium text-right">
                 {slots.length > 0
-                  ? slots.map((s) => `${s.start}-${s.end}`).join(', ')
-                  : 'Not Available'}
+                  ? slots.map((slot) => `${slot.start} - ${slot.end}`).join(', ')
+                  : 'Not available'}
               </span>
             </div>
           ))}
