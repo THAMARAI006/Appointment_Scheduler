@@ -16,10 +16,11 @@ interface DashboardOverviewProps {
 export function DashboardOverview({ appointments, profileName, kpis }: DashboardOverviewProps) {
   const today = new Date().toISOString().split('T')[0];
   const todayAppointments = appointments.filter((apt) => apt.date === today);
+  const todayFromAppointments = todayAppointments.length;
   
   const stats = {
     total: kpis?.total ?? appointments.length,
-    today: kpis?.upcoming ?? todayAppointments.length,
+    today: Math.max(kpis?.upcoming ?? 0, todayFromAppointments),
     pending: kpis?.pending ?? appointments.filter((apt) => apt.status === 'Pending').length,
     confirmed: kpis?.confirmed ?? appointments.filter((apt) => apt.status === 'Confirmed').length,
     completed: kpis?.completed ?? appointments.filter((apt) => apt.status === 'Completed').length,

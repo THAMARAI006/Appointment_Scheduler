@@ -33,11 +33,12 @@ export function CompactSummary({
   kpis,
 }: CompactSummaryProps) {
   const today = new Date().toISOString().split('T')[0];
+  const todayFromAppointments = appointments.filter((a) => a.date === today).length;
 
   const pendingCount = kpis?.pending ?? appointments.filter((a) => a.status === 'Pending').length;
   const confirmedCount = kpis?.confirmed ?? appointments.filter((a) => a.status === 'Confirmed').length;
   const completedCount = kpis?.completed ?? appointments.filter((a) => a.status === 'Completed').length;
-  const todayCount = kpis?.upcoming ?? appointments.filter((a) => a.date === today).length;
+  const todayCount = Math.max(kpis?.upcoming ?? 0, todayFromAppointments);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">

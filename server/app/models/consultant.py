@@ -20,3 +20,4 @@ class Consultant(Base):
     tenant = relationship("Tenant", back_populates="consultants")
     user = relationship("User", back_populates="consultant_profile")
     appointments = relationship("Appointment", back_populates="consultant")
+    availability_slots = relationship("ConsultantAvailability", back_populates="consultant")

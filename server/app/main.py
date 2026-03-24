@@ -8,6 +8,7 @@ from app.api.routes.tenants import router as tenant_router
 from app.api.routes.users import router as user_router
 from app.api.routes.consultants import router as consultant_router
 from app.api.routes.services import router as service_router
+from app.api.routes.availability import router as availability_router
 
 # 🔹 Create DB tables
 Base.metadata.create_all(bind=engine)
@@ -59,4 +60,9 @@ app.include_router(
     whatsapp_router,
     prefix="/whatsapp",
     tags=["WhatsApp"]
+)
+
+app.include_router(
+    availability_router,
+    tags=["Availability"]
 )

@@ -7,12 +7,15 @@ interface TopNavProps {
   subtitle: string;
   showAddButton?: boolean;
   onAddClick?: () => void;
+  addButtonLabel?: string;
   profile: {
     name: string;
     role: string;
     avatar: string;
   };
   onEditProfile: () => void;
+  onOpenSettings: () => void;
+  onLogout: () => void;
 }
 
 export function TopNav({
@@ -20,8 +23,11 @@ export function TopNav({
   subtitle,
   showAddButton,
   onAddClick,
+  addButtonLabel = 'Add Appointment',
   profile,
   onEditProfile,
+  onOpenSettings,
+  onLogout,
 }: TopNavProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
@@ -40,7 +46,7 @@ export function TopNav({
             {showAddButton && onAddClick && (
               <Button onClick={onAddClick} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-sm rounded-xl">
                 <span className="text-lg leading-none">+</span>
-                Add Appointment
+                {addButtonLabel}
               </Button>
             )}
 
@@ -136,8 +142,8 @@ export function TopNav({
 
                       <button
                         onClick={() => {
+                          onOpenSettings();
                           setShowProfileMenu(false);
-                          // Handle settings navigation
                         }}
                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 transition-colors text-left"
                       >
@@ -149,8 +155,8 @@ export function TopNav({
 
                       <button
                         onClick={() => {
+                          onLogout();
                           setShowProfileMenu(false);
-                          // Handle logout
                         }}
                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-orange-50 transition-colors text-left text-orange-600"
                       >

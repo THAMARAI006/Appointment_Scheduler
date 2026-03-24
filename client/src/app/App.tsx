@@ -8,218 +8,12 @@ import { AvailabilityView } from './components/availability-view';
 import { DashboardOverview } from './components/dashboard-overview';
 import { AppointmentModal } from './components/appointment-modal';
 import { EditProfileModal } from './components/edit-profile-modal';
+import { ConsultantModal } from './components/consultant-modal';
 import { ConsultantsGrid } from './components/consultants-grid';
 import { ConsultantDetailsPanel } from './components/consultant-details-panel';
 import { ConsultantAvailabilityHeatmap } from './components/consultant-availability-heatmap';
 import type { Appointment } from './components/appointment-card';
 import type { Consultant } from './types/consultant';
-
-// Sample Consultants (fallback)
-const sampleConsultants: Consultant[] = [
-  {
-    id: '1',
-    name: 'Dr. Sarah Williams',
-    specialization: 'Cardiology',
-    email: 'sarah.williams@clinic.com',
-    phone: '+1 (555) 234-5678',
-    availability: {
-      monday: [{ start: '09:00', end: '17:00' }],
-      tuesday: [{ start: '09:00', end: '17:00' }],
-      wednesday: [{ start: '09:00', end: '17:00' }],
-      thursday: [{ start: '09:00', end: '17:00' }],
-      friday: [{ start: '09:00', end: '13:00' }],
-      saturday: [],
-      sunday: [],
-    },
-  },
-  {
-    id: '2',
-    name: 'Dr. Michael Chen',
-    specialization: 'Dermatology',
-    email: 'michael.chen@clinic.com',
-    phone: '+1 (555) 345-6789',
-    availability: {
-      monday: [{ start: '10:00', end: '18:00' }],
-      tuesday: [{ start: '10:00', end: '18:00' }],
-      wednesday: [{ start: '10:00', end: '18:00' }],
-      thursday: [{ start: '10:00', end: '18:00' }],
-      friday: [{ start: '10:00', end: '16:00' }],
-      saturday: [{ start: '09:00', end: '13:00' }],
-      sunday: [],
-    },
-  },
-  {
-    id: '3',
-    name: 'Dr. Emily Rodriguez',
-    specialization: 'Pediatrics',
-    email: 'emily.rodriguez@clinic.com',
-    phone: '+1 (555) 456-7890',
-    availability: {
-      monday: [{ start: '08:00', end: '16:00' }],
-      tuesday: [{ start: '08:00', end: '16:00' }],
-      wednesday: [{ start: '08:00', end: '16:00' }],
-      thursday: [{ start: '08:00', end: '16:00' }],
-      friday: [{ start: '08:00', end: '14:00' }],
-      saturday: [],
-      sunday: [],
-    },
-  },
-  {
-    id: '4',
-    name: 'Dr. James Thompson',
-    specialization: 'Orthopedics',
-    email: 'james.thompson@clinic.com',
-    phone: '+1 (555) 567-8901',
-    availability: {
-      monday: [{ start: '09:00', end: '17:00' }],
-      tuesday: [{ start: '09:00', end: '17:00' }],
-      wednesday: [],
-      thursday: [{ start: '09:00', end: '17:00' }],
-      friday: [{ start: '09:00', end: '17:00' }],
-      saturday: [{ start: '09:00', end: '13:00' }],
-      sunday: [],
-    },
-  },
-];
-
-// Sample Appointments
-const initialAppointments: Appointment[] = [
-  {
-    id: '1',
-    customerName: 'Sarah Johnson',
-    consultantId: '1',
-    date: new Date().toISOString().split('T')[0],
-    startTime: '09:00',
-    endTime: '10:00',
-    status: 'Confirmed',
-  },
-  {
-    id: '2',
-    customerName: 'Michael Brown',
-    consultantId: '2',
-    date: new Date().toISOString().split('T')[0],
-    startTime: '10:00',
-    endTime: '11:00',
-    status: 'Pending',
-  },
-  {
-    id: '3',
-    customerName: 'Emma Wilson',
-    consultantId: '3',
-    date: new Date().toISOString().split('T')[0],
-    startTime: '09:00',
-    endTime: '10:00',
-    status: 'Confirmed',
-  },
-  {
-    id: '4',
-    customerName: 'David Martinez',
-    consultantId: '1',
-    date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-    startTime: '11:00',
-    endTime: '12:00',
-    status: 'Completed',
-  },
-  {
-    id: '5',
-    customerName: 'Lisa Anderson',
-    consultantId: '4',
-    date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-    startTime: '09:00',
-    endTime: '10:00',
-    status: 'Pending',
-  },
-  {
-    id: '6',
-    customerName: 'James Taylor',
-    consultantId: '2',
-    date: new Date().toISOString().split('T')[0],
-    startTime: '14:00',
-    endTime: '15:00',
-    status: 'Confirmed',
-  },
-  {
-    id: '7',
-    customerName: 'Maria Garcia',
-    consultantId: '3',
-    date: new Date(Date.now() + 172800000).toISOString().split('T')[0],
-    startTime: '10:00',
-    endTime: '11:00',
-    status: 'Pending',
-  },
-  {
-    id: '8',
-    customerName: 'Robert White',
-    consultantId: '1',
-    date: new Date().toISOString().split('T')[0],
-    startTime: '13:00',
-    endTime: '14:00',
-    status: 'Completed',
-  },
-  {
-    id: '9',
-    customerName: 'Jennifer Lee',
-    consultantId: '4',
-    date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-    startTime: '15:00',
-    endTime: '16:00',
-    status: 'Completed',
-  },
-  {
-    id: '10',
-    customerName: 'Christopher Wang',
-    consultantId: '2',
-    date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-    startTime: '11:00',
-    endTime: '12:00',
-    status: 'Confirmed',
-  },
-  {
-    id: '11',
-    customerName: 'Amanda Rodriguez',
-    consultantId: '3',
-    date: new Date().toISOString().split('T')[0],
-    startTime: '14:00',
-    endTime: '15:00',
-    status: 'Pending',
-  },
-  {
-    id: '12',
-    customerName: 'Daniel Kim',
-    consultantId: '4',
-    date: new Date(Date.now() + 259200000).toISOString().split('T')[0],
-    startTime: '10:00',
-    endTime: '11:00',
-    status: 'Confirmed',
-  },
-  {
-    id: '13',
-    customerName: 'Patricia Moore',
-    consultantId: '1',
-    date: new Date().toISOString().split('T')[0],
-    startTime: '15:00',
-    endTime: '16:00',
-    status: 'Confirmed',
-  },
-  {
-    id: '14',
-    customerName: 'Kevin Zhang',
-    consultantId: '2',
-    date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-    startTime: '15:00',
-    endTime: '16:00',
-    status: 'Pending',
-  },
-  {
-    id: '15',
-    customerName: 'Sophie Turner',
-    consultantId: '3',
-    date: new Date().toISOString().split('T')[0],
-    startTime: '11:00',
-    endTime: '12:00',
-    status: 'Confirmed',
-  },
-];
 
 interface ProfileData {
   name: string;
@@ -228,6 +22,36 @@ interface ProfileData {
   avatar: string;
   phone: string;
   department: string;
+}
+
+interface DashboardSettings {
+  defaultSection: 'dashboard' | 'appointments' | 'consultants' | 'availability' | 'settings';
+  profile: {
+    adminName: string;
+    email: string;
+    phoneNumber: string;
+  };
+  business: {
+    businessName: string;
+    businessDescription: string;
+    workingHoursStart: string;
+    workingHoursEnd: string;
+    timeZone: string;
+  };
+  whatsapp: {
+    whatsappNumber: string;
+    apiStatus: 'Connected' | 'Not Connected';
+    webhookUrl: string;
+  };
+  notifications: {
+    appointmentConfirmation: boolean;
+    reminderMessages: boolean;
+    cancellationAlerts: boolean;
+  };
+  consultant: {
+    defaultAppointmentDurationMinutes: number;
+    maxBookingsPerDay: number;
+  };
 }
 
 type ApiAppointment = {
@@ -290,7 +114,70 @@ type ApiConsultant = {
   status: string;
 };
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+const AUTH_STORAGE_KEY = 'wp_dashboard_logged_in';
+const SETTINGS_STORAGE_KEY = 'wp_dashboard_settings';
+
+const DEFAULT_SETTINGS: DashboardSettings = {
+  defaultSection: 'appointments',
+  profile: {
+    adminName: 'Lotus',
+    email: 'lotus@appointme.com',
+    phoneNumber: '+1 (555) 123-4567',
+  },
+  business: {
+    businessName: 'Lotus Health Center',
+    businessDescription: 'Appointment and consultant scheduling center',
+    workingHoursStart: '09:00',
+    workingHoursEnd: '17:00',
+    timeZone: 'Asia/Kolkata',
+  },
+  whatsapp: {
+    whatsappNumber: '+91 90000 00000',
+    apiStatus: 'Connected',
+    webhookUrl: '/whatsapp/webhook',
+  },
+  notifications: {
+    appointmentConfirmation: true,
+    reminderMessages: true,
+    cancellationAlerts: true,
+  },
+  consultant: {
+    defaultAppointmentDurationMinutes: 30,
+    maxBookingsPerDay: 12,
+  },
+};
+
+const normalizeSettings = (raw: unknown): DashboardSettings => {
+  if (!raw || typeof raw !== 'object') return DEFAULT_SETTINGS;
+  const parsed = raw as Partial<DashboardSettings>;
+
+  return {
+    defaultSection: parsed.defaultSection || DEFAULT_SETTINGS.defaultSection,
+    profile: {
+      ...DEFAULT_SETTINGS.profile,
+      ...(parsed.profile || {}),
+    },
+    business: {
+      ...DEFAULT_SETTINGS.business,
+      ...(parsed.business || {}),
+    },
+    whatsapp: {
+      ...DEFAULT_SETTINGS.whatsapp,
+      ...(parsed.whatsapp || {}),
+      apiStatus:
+        parsed.whatsapp?.apiStatus === 'Not Connected' ? 'Not Connected' : 'Connected',
+    },
+    notifications: {
+      ...DEFAULT_SETTINGS.notifications,
+      ...(parsed.notifications || {}),
+    },
+    consultant: {
+      ...DEFAULT_SETTINGS.consultant,
+      ...(parsed.consultant || {}),
+    },
+  };
+};
 
 const defaultAvailability: Consultant['availability'] = {
   monday: [{ start: '09:00', end: '17:00' }],
@@ -390,24 +277,48 @@ const toTimeString = (value: string | null | undefined, fallback: string) => {
   return extractTimeString(value, fallback);
 };
 
+const buildDateTime = (date: string, time: string) => {
+  const isoLike = `${date}T${time}:00`;
+  const parsed = new Date(isoLike);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
 export default function App() {
-  const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments);
-  const [calendarAppointments, setCalendarAppointments] = useState<Appointment[]>(initialAppointments);
-  const [upcomingAppointments, setUpcomingAppointments] = useState<Appointment[]>(initialAppointments);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    return window.localStorage.getItem(AUTH_STORAGE_KEY) !== 'false';
+  });
+  const [loginName, setLoginName] = useState('');
+  const [settings, setSettings] = useState<DashboardSettings>(() => {
+    if (typeof window === 'undefined') return DEFAULT_SETTINGS;
+    const stored = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
+    if (!stored) return DEFAULT_SETTINGS;
+    try {
+      return normalizeSettings(JSON.parse(stored));
+    } catch {
+      return DEFAULT_SETTINGS;
+    }
+  });
+
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [calendarAppointments, setCalendarAppointments] = useState<Appointment[]>([]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState<Appointment[]>([]);
   const [kpiStats, setKpiStats] = useState<ApiAppointmentKpi | null>(null);
-  const [consultants, setConsultants] = useState<Consultant[]>(sampleConsultants);
+  const [consultants, setConsultants] = useState<Consultant[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('week');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConsultantModalOpen, setIsConsultantModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
-  const [activeSection, setActiveSection] = useState('appointments');
+  const [activeSection, setActiveSection] = useState(settings.defaultSection);
   const [selectedConsultant, setSelectedConsultant] = useState<Consultant | null>(null);
+  const [editingConsultant, setEditingConsultant] = useState<Consultant | null>(null);
   const [defaultTenantId, setDefaultTenantId] = useState<number | null>(null);
   const [defaultServiceId, setDefaultServiceId] = useState<number | null>(null);
 
   const refreshAppointments = async () => {
-    const appointmentsResponse = await fetch(`${API_BASE_URL}/appointments`);
+    const appointmentsResponse = await fetch(`${API_BASE_URL}/appointments/`);
     if (!appointmentsResponse.ok) {
       throw new Error(`Failed to load appointments (${appointmentsResponse.status})`);
     }
@@ -441,7 +352,7 @@ export default function App() {
         const consultantId =
           consultantList.find((consultant) => consultant.name === item.consultant_name)?.id ||
           consultantList[0]?.id ||
-          '1';
+          '';
 
         const startTime = toTimeString(item.start_time, '09:00');
         const endTime = toTimeString(item.end_time, '10:00');
@@ -473,6 +384,7 @@ export default function App() {
 
     const items: ApiUpcomingAppointment[] = await response.json();
     const now = new Date();
+    const todayDate = now.toISOString().split('T')[0];
 
     const mapped = items
       .filter((item) => item.status !== 'completed' && item.status !== 'cancelled')
@@ -480,24 +392,26 @@ export default function App() {
         const consultantId =
           consultantList.find((consultant) => consultant.name === item.consultant_name)?.id ||
           consultantList[0]?.id ||
-          '1';
+          '';
 
-        const start = new Date(item.start_time);
-        const end = item.end_time ? new Date(item.end_time) : null;
+        const startTime = toTimeString(item.start_time, '09:00');
+        const endTime = toTimeString(item.end_time, '10:00');
+        const start = buildDateTime(item.date, startTime);
+        const end = buildDateTime(item.date, endTime);
 
         return {
           id: item.id.toString(),
           customerName: item.applicant_name,
           consultantId,
           date: item.date,
-          startTime: toTimeString(item.start_time, '09:00'),
-          endTime: end ? toTimeString(item.end_time, '10:00') : toTimeString(item.start_time, '10:00'),
+          startTime,
+          endTime,
           status: toUiStatus(item.status),
           _sortTime: start,
-        } as Appointment & { _sortTime: Date };
+        } as Appointment & { _sortTime: Date | null };
       })
-      .filter((item) => item._sortTime >= now)
-      .sort((a, b) => a._sortTime.getTime() - b._sortTime.getTime())
+      .filter((item) => item.date >= todayDate)
+      .sort((a, b) => a._sortTime!.getTime() - b._sortTime!.getTime())
       .map(({ _sortTime, ...appointment }) => appointment as Appointment);
 
     setUpcomingAppointments(mapped);
@@ -505,107 +419,57 @@ export default function App() {
 
   useEffect(() => {
     const loadInitialData = async () => {
+      let resolvedConsultants: Consultant[] = [];
+
       try {
-        const tenantsResponse = await fetch(`${API_BASE_URL}/tenants`);
+        const tenantsResponse = await fetch(`${API_BASE_URL}/tenants/`);
         if (!tenantsResponse.ok) {
           throw new Error(`Failed to load tenants (${tenantsResponse.status})`);
         }
 
         const tenants: ApiTenant[] = await tenantsResponse.json();
-        let tenantId: number;
-        if (tenants.length > 0) {
-          tenantId = tenants[0].id;
-        } else {
-          const createTenantResponse = await fetch(`${API_BASE_URL}/tenants`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: 'Default Clinic',
-              code: 'default-clinic',
-              status: 'active',
-            }),
-          });
-          if (!createTenantResponse.ok) {
-            throw new Error(`Failed to create tenant (${createTenantResponse.status})`);
-          }
-          const createdTenant: ApiTenant = await createTenantResponse.json();
-          tenantId = createdTenant.id;
-        }
+        const tenantId = tenants[0]?.id ?? null;
         setDefaultTenantId(tenantId);
 
-        const servicesResponse = await fetch(`${API_BASE_URL}/services/tenant/${tenantId}`);
-        if (!servicesResponse.ok) {
-          throw new Error(`Failed to load services (${servicesResponse.status})`);
-        }
-
-        const tenantServices: ApiService[] = await servicesResponse.json();
-        let serviceId: number;
-        if (tenantServices.length > 0) {
-          serviceId = tenantServices[0].id;
-        } else {
-          const createServiceResponse = await fetch(`${API_BASE_URL}/services`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              tenant_id: tenantId,
-              name: 'General Consultation',
-              duration_minutes: 60,
-              price: 0,
-              status: 'active',
-            }),
-          });
-          if (!createServiceResponse.ok) {
-            throw new Error(`Failed to create service (${createServiceResponse.status})`);
+        if (tenantId) {
+          const servicesResponse = await fetch(`${API_BASE_URL}/services/tenant/${tenantId}`);
+          if (servicesResponse.ok) {
+            const tenantServices: ApiService[] = await servicesResponse.json();
+            setDefaultServiceId(tenantServices[0]?.id ?? null);
+          } else {
+            setDefaultServiceId(null);
           }
-          const createdService: ApiService = await createServiceResponse.json();
-          serviceId = createdService.id;
+        } else {
+          setDefaultServiceId(null);
         }
-        setDefaultServiceId(serviceId);
 
-        const consultantsResponse = await fetch(`${API_BASE_URL}/consultants`);
+        const consultantsResponse = await fetch(`${API_BASE_URL}/consultants/`);
         if (!consultantsResponse.ok) {
           throw new Error(`Failed to load consultants (${consultantsResponse.status})`);
         }
 
         const consultantsData: ApiConsultant[] = await consultantsResponse.json();
-        const tenantConsultants = consultantsData.filter((consultant) => consultant.tenant_id === tenantId);
-        let finalConsultants: ApiConsultant[] = tenantConsultants;
-
-        if (tenantConsultants.length === 0) {
-          const createConsultantPromises = sampleConsultants.map((consultant) =>
-            fetch(`${API_BASE_URL}/consultants`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                tenant_id: tenantId,
-                display_name: consultant.name,
-                specialization: consultant.specialization,
-                status: 'active',
-              }),
-            })
-          );
-
-          const createdConsultantResponses = await Promise.all(createConsultantPromises);
-          const allSucceeded = createdConsultantResponses.every((response) => response.ok);
-          if (allSucceeded) {
-            const createdConsultants: ApiConsultant[] = await Promise.all(
-              createdConsultantResponses.map(async (response) => response.json())
-            );
-            finalConsultants = createdConsultants;
-          }
-        }
-
-        if (finalConsultants.length > 0) {
-          setConsultants(finalConsultants.map(mapApiToUiConsultant));
-        }
-
-        await refreshAppointments();
-        const uiConsultants = finalConsultants.map(mapApiToUiConsultant);
-        await refreshKpisAndCalendar(currentDate, viewMode, uiConsultants);
-        await refreshUpcomingAppointments(uiConsultants);
+        const tenantConsultants = tenantId
+          ? consultantsData.filter((consultant) => consultant.tenant_id === tenantId)
+          : [];
+        resolvedConsultants = tenantConsultants.map(mapApiToUiConsultant);
       } catch (error) {
-        console.error('Failed to load backend data, using local sample data.', error);
-        setConsultants(sampleConsultants);
+        console.error('Failed to load tenant/service/consultant data.', error);
+        setDefaultTenantId(null);
+        setDefaultServiceId(null);
+        resolvedConsultants = [];
+      }
+
+      try {
+        setConsultants(resolvedConsultants);
+        await refreshAppointments();
+        await refreshKpisAndCalendar(currentDate, viewMode, resolvedConsultants);
+        await refreshUpcomingAppointments(resolvedConsultants);
+      } catch (error) {
+        console.error('Failed to load appointment/dashboard data.', error);
+        setAppointments([]);
+        setCalendarAppointments([]);
+        setUpcomingAppointments([]);
       }
     };
 
@@ -625,6 +489,23 @@ export default function App() {
     void fetchFilteredCalendarData();
   }, [currentDate, viewMode, consultants]);
 
+  useEffect(() => {
+    if (consultants.length === 0) return;
+
+    const intervalId = window.setInterval(() => {
+      void refreshAppointments();
+      void refreshKpisAndCalendar(currentDate, viewMode, consultants);
+      void refreshUpcomingAppointments(consultants);
+    }, 15 * 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [currentDate, viewMode, consultants]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+  }, [settings]);
+
   const [profile, setProfile] = useState<ProfileData>({
     name: 'Lotus',
     email: 'lotus@appointme.com',
@@ -633,10 +514,26 @@ export default function App() {
     phone: '+1 (555) 123-4567',
     department: 'General Medicine',
   });
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [passwordMessage, setPasswordMessage] = useState('');
 
   const handleAddAppointment = () => {
     setSelectedAppointment(null);
     setIsModalOpen(true);
+  };
+
+  const handleAddConsultant = () => {
+    setEditingConsultant(null);
+    setIsConsultantModalOpen(true);
+  };
+
+  const handleEditConsultant = (consultant: Consultant) => {
+    setEditingConsultant(consultant);
+    setIsConsultantModalOpen(true);
   };
 
   const handleAppointmentClick = (appointment: Appointment) => {
@@ -689,7 +586,7 @@ export default function App() {
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/appointments`, {
+      const response = await fetch(`${API_BASE_URL}/appointments/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -732,6 +629,104 @@ export default function App() {
     setProfile(profileData);
   };
 
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(AUTH_STORAGE_KEY, 'false');
+    }
+  };
+
+  const handleLogin = () => {
+    if (!loginName.trim()) return;
+    setProfile((prev) => ({ ...prev, name: loginName.trim() }));
+    setIsAuthenticated(true);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(AUTH_STORAGE_KEY, 'true');
+    }
+    setActiveSection(settings.defaultSection);
+  };
+
+  const handleSaveConsultant = async (
+    consultantData: Omit<Consultant, 'id' | 'availability' | 'avatar'>
+  ) => {
+    if (!defaultTenantId) {
+      console.error('Missing tenant data. Please create tenant records first.');
+      return;
+    }
+
+    const payload = {
+      tenant_id: defaultTenantId,
+      display_name: consultantData.name,
+      specialization: consultantData.specialization,
+      status: 'active',
+    };
+
+    try {
+      const isEdit = Boolean(editingConsultant);
+      const consultantUrl = isEdit
+        ? `${API_BASE_URL}/consultants/${editingConsultant?.id}`
+        : `${API_BASE_URL}/consultants/`;
+
+      const response = await fetch(consultantUrl, {
+        method: isEdit ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Save consultant failed with status ${response.status}`);
+      }
+
+      const savedConsultant: ApiConsultant = await response.json();
+      const mappedConsultant = {
+        ...mapApiToUiConsultant(savedConsultant),
+        email: consultantData.email,
+        phone: consultantData.phone,
+      };
+
+      if (isEdit && editingConsultant) {
+        setConsultants((prev) =>
+          prev.map((consultant) =>
+            consultant.id === editingConsultant.id ? mappedConsultant : consultant
+          )
+        );
+        setSelectedConsultant((prev) =>
+          prev?.id === editingConsultant.id ? mappedConsultant : prev
+        );
+      } else {
+        setConsultants((prev) => [...prev, mappedConsultant]);
+      }
+
+      setEditingConsultant(null);
+    } catch (error) {
+      console.error('Failed to save consultant in backend.', error);
+    }
+  };
+
+  const handleDeleteConsultant = async () => {
+    if (!editingConsultant) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/consultants/${editingConsultant.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Delete consultant failed with status ${response.status}`);
+      }
+
+      setConsultants((prev) => prev.filter((consultant) => consultant.id !== editingConsultant.id));
+      setSelectedConsultant((prev) =>
+        prev?.id === editingConsultant.id ? null : prev
+      );
+      setEditingConsultant(null);
+    } catch (error) {
+      console.error('Failed to delete consultant in backend.', error);
+    }
+  };
+
   // Get next appointment
   const today = new Date().toISOString().split('T')[0];
   const nextAppointment = upcomingAppointments[0];
@@ -746,32 +741,70 @@ export default function App() {
         title: 'Dashboard',
         subtitle: 'Overview of your appointments and activity',
         showAddButton: false,
+        addButtonLabel: 'Add Appointment',
       },
       appointments: {
         title: 'Appointment Scheduler',
         subtitle: 'Manage your calendar and bookings',
         showAddButton: false,
+        addButtonLabel: 'Add Appointment',
       },
       consultants: {
         title: 'Consultants',
         subtitle: 'View and manage consultant profiles',
-        showAddButton: false,
+        showAddButton: true,
+        addButtonLabel: 'Add Consultant',
       },
       availability: {
         title: 'Availability Overview',
         subtitle: 'Check consultant availability at a glance',
         showAddButton: false,
+        addButtonLabel: 'Add Appointment',
       },
       settings: {
         title: 'Settings',
         subtitle: 'Configure your preferences',
         showAddButton: false,
+        addButtonLabel: 'Add Appointment',
       },
     };
     return configs[activeSection as keyof typeof configs];
   };
 
   const sectionConfig = getSectionConfig();
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+        <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
+          <h1 className="text-2xl font-semibold text-slate-800">Sign In</h1>
+          <p className="text-sm text-slate-500 mt-2">Enter your name to continue to the dashboard.</p>
+          <div className="mt-6 space-y-4">
+            <label className="block text-sm font-medium text-slate-700">
+              Name
+              <input
+                type="text"
+                value={loginName}
+                onChange={(event) => setLoginName(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') handleLogin();
+                }}
+                placeholder="Thamizh"
+                className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </label>
+            <button
+              onClick={handleLogin}
+              className="w-full rounded-xl bg-blue-600 text-white px-4 py-2.5 font-medium hover:bg-blue-700 disabled:opacity-50"
+              disabled={!loginName.trim()}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -780,9 +813,10 @@ export default function App() {
 
         activeSection={activeSection}
         onSectionChange={(section: string) => {
-          setActiveSection(section);
+          setActiveSection(section as DashboardSettings['defaultSection']);
           setSelectedConsultant(null);
         }}
+        onLogout={handleLogout}
         profile={profile}
       />
 
@@ -794,9 +828,12 @@ export default function App() {
             title={sectionConfig.title}
             subtitle={sectionConfig.subtitle}
             showAddButton={sectionConfig.showAddButton}
-            onAddClick={handleAddAppointment}
+            addButtonLabel={sectionConfig.addButtonLabel}
+            onAddClick={activeSection === 'consultants' ? handleAddConsultant : handleAddAppointment}
             profile={profile}
             onEditProfile={() => setIsProfileModalOpen(true)}
+            onOpenSettings={() => setActiveSection('settings')}
+            onLogout={handleLogout}
           />
         </div>
 
@@ -884,12 +921,20 @@ export default function App() {
                   />
                 ) : (
                   <div className="space-y-6">
-                    <button
-                      onClick={() => setSelectedConsultant(null)}
-                      className="text-blue-600 hover:text-blue-700 font-medium"
-                    >
-                      ← Back to all consultants
-                    </button>
+                    <div className="flex items-center justify-between gap-4">
+                      <button
+                        onClick={() => setSelectedConsultant(null)}
+                        className="text-blue-600 hover:text-blue-700 font-medium"
+                      >
+                        ← Back to all consultants
+                      </button>
+                      <button
+                        onClick={() => selectedConsultant && handleEditConsultant(selectedConsultant)}
+                        className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium"
+                      >
+                        Edit Consultant
+                      </button>
+                    </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       <ConsultantDetailsPanel consultant={selectedConsultant} />
                       <ConsultantAvailabilityHeatmap
@@ -925,8 +970,8 @@ export default function App() {
             {activeSection === 'settings' && (
               <div className="max-w-4xl mx-auto">
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
-                  <h2 className="text-xl font-semibold mb-6">Settings</h2>
-                  <p className="text-gray-600">Configure your application preferences here.</p>
+                  <h2 className="text-xl font-semibold mb-2">Settings</h2>
+                  <p className="text-sm text-slate-500">No settings configured yet.</p>
                 </div>
               </div>
             )}
@@ -954,6 +999,18 @@ export default function App() {
         onClose={() => setIsProfileModalOpen(false)}
         onSave={handleSaveProfile}
         currentProfile={profile}
+      />
+
+      {/* Consultant Modal */}
+      <ConsultantModal
+        isOpen={isConsultantModalOpen}
+        onClose={() => {
+          setIsConsultantModalOpen(false);
+          setEditingConsultant(null);
+        }}
+        consultant={editingConsultant}
+        onSave={handleSaveConsultant}
+        onDelete={editingConsultant ? handleDeleteConsultant : undefined}
       />
     </div>
   );

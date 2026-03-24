@@ -1,5 +1,5 @@
-from sqlalchemy import or_
 from sqlalchemy.orm import Session
+import re
 
 from app.domain.entities import UserEntity
 from app.domain.repositories import UserRepositoryInterface
@@ -36,15 +36,31 @@ class UserRepositoryImplementation(UserRepositoryInterface):
         )
         return self._to_entity(model)
 
+    @staticmethod
+    def _normalize_phone(phone: str | None) -> str:
+        if not phone:
+            return ""
+        return re.sub(r"\D", "", phone)
+
     def login(self, email: str | None, phone: str | None) -> UserEntity | None:
-        model = (
-            self.db.query(User)
-            .filter(or_(User.email == email, User.phone == phone))
-            .first()
-        )
-        if not model:
-            return None
-        return self._to_entity(model)
+        # Only match on fields that are actually provided; this avoids
+        # accidental matches like "email IS NULL" when email is missing.
+        normalized_phone = self._normalize_phone(phone)
+
+        if email:
+            model = self.db.query(User).filter(User.email == email).first()
+            if model:
+                return self._to_entity(model)
+
+        if normalized_phone:
+            # Compare in Python after normalizing both sides so formats like
+            # "+1 (555) ..." and "1555..." map to the same customer.
+            candidates = self.db.query(User).filter(User.phone.isnot(None)).all()
+            for candidate in candidates:
+                if self._normalize_phone(candidate.phone) == normalized_phone:
+                    return self._to_entity(candidate)
+
+        return None
 
     def update_profile(self, user: UserEntity) -> UserEntity:
         model = self.repository.get_by_id(user.id)

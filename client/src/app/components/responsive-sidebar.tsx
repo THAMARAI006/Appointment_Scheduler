@@ -14,6 +14,7 @@ import { useState } from 'react';
 interface ResponsiveSidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
+  onLogout: () => void;
   profile: {
     name: string;
     role: string;
@@ -29,7 +30,7 @@ const menuItems = [
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
-export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: ResponsiveSidebarProps) {
+export function ResponsiveSidebar({ activeSection, onSectionChange, onLogout, profile }: ResponsiveSidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const SidebarContent = () => (
@@ -101,7 +102,13 @@ export function ResponsiveSidebar({ activeSection, onSectionChange, profile }: R
           </div>
           
           {/* Logout Button */}
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-orange-600 hover:bg-orange-50 transition-all border border-orange-200">
+          <button
+            onClick={() => {
+              setIsMobileOpen(false);
+              onLogout();
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-orange-600 hover:bg-orange-50 transition-all border border-orange-200"
+          >
             <LogOut className="w-5 h-5" />
             <span className="flex-1 text-left font-medium">Logout</span>
           </button>
